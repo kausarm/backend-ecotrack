@@ -13,6 +13,7 @@ let laporan = db.define(
       type: Sequelize.INTEGER,
       primaryKey: true,
       allowNull: false,
+      autoIncrement: true,
     },
     provinsi: Sequelize.CHAR,
     kabupaten: Sequelize.CHAR,

@@ -37,6 +37,51 @@ controller.getAllLaporan = async (req, res) => {
   }
 };
 
+// CREATE LAPORAN
+controller.createLaporan = async (req, res) => {
+  try {
+    const {
+      provinsi,
+      kabupaten,
+      kecamatan,
+      kelurahan,
+      pin,
+      tps,
+      tanggal,
+      kondisi_tps,
+      deskripsi,
+      gambar,
+    } = req.body;
+
+    const result = await model.laporan.create({
+      provinsi: provinsi,
+      kabupaten: kabupaten,
+      kecamatan: kecamatan,
+      kelurahan: kelurahan,
+      pin:pin,
+      tps:tps,
+      tanggal:tanggal,
+      kondisi_tps:kondisi_tps,
+      deskripsi:deskripsi,
+      gambar:gambar,
+    });
+
+    res.status(201).json({
+      success: true,
+      status: 201,
+      message: "Berhasil menambahkan laporan",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Gagal membuat laporan",
+      error: error.message,
+    });
+  }
+};
+// CREATE LAPORAN
 
 controller.getLaporanByid = async (req, res) => {
   try {
@@ -77,7 +122,7 @@ controller.updateLaporan = async (req, res) => {
 
     if (!dataLaporan) {
       return res.status(404).json({
-        message: "User tidak ditemukan",
+        message: "Laporan tidak ditemukan",
         status: 404,
       });
     }
@@ -100,7 +145,6 @@ controller.updateLaporan = async (req, res) => {
   }
 };
 // UPDATE USER
-
 
 // DELETE USER
 controller.deleteLaporan = async (req, res) => {
@@ -139,3 +183,7 @@ controller.deleteLaporan = async (req, res) => {
 // DELETE USER
 
 module.exports = controller;
+
+
+
+
