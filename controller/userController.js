@@ -1,6 +1,6 @@
 const model = require("../config/model/index");
 const controller = {};
-
+const bcrypt = require("bcrypt");
 
 controller.getAllUsers = async (req, res) => {
   try {
@@ -73,6 +73,7 @@ controller.createUser = async (req, res) => {
       nik,
       nama,
       email,
+      hp,
       provinsi,
       kabupaten,
       kecamatan,
@@ -96,16 +97,19 @@ controller.createUser = async (req, res) => {
       });
     }
 
+    const hashedPassword = bcrypt.hashSync(password,13);
+
     const result = await model.users.create({
       nik: nik,
       nama: nama,
       email: email,
+      hp: hp,
       provinsi: provinsi,
       kabupaten: kabupaten,
       kecamatan: kecamatan,
       kelurahan: kelurahan,
       level_user: level_user,
-      password: password,
+      password: hashedPassword, // Gunakan password yang telah dienkripsi
       photo: photo,
     });
 
@@ -195,9 +199,36 @@ controller.deleteUser = async (req, res) => {
     });
   }
 };
-
 // DELETE USER
 
+// LOGIN USER
+controller.loginUser = async (req,res) =>{
+const { nik, password } = req.body;
+
+try {
+  
+  const user = await model.users.findOne({ where: { nik } });
+
+  if (!user) {
+    return res.status(404).json({ message: "User tidak ditemukan" });
+  }
+
+  const isPasswordValid =  bcrypt.compareSync(password, user.password);
+
+
+  if (isPasswordValid) {
+    return res.status(200).json({ message: "Login berhasil",error: false, status:200, data: user});
+  }else{
+    return res.status(401).json({ message: "Password salah", status:401});
+  }
+  
+} catch (error) {
+  console.error("Terjadi kesalahan:", error);
+  return res.status(500).json({ message: "Terjadi kesalahan saat login" });
+}
+
+}
+// LOGIN USER
 
 
 module.exports = controller;

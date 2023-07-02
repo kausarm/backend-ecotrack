@@ -16,6 +16,7 @@ let users = db.define(
     },
     nama: Sequelize.STRING,
     email: Sequelize.STRING,
+    hp: Sequelize.STRING,
     provinsi: Sequelize.CHAR,
     kabupaten: Sequelize.CHAR,
     kecamatan: Sequelize.CHAR,
