@@ -1,15 +1,18 @@
+const  {Sequelize}  = require("sequelize");
 const model = require("../config/model/index");
 const controller = {};
+
 
 controller.getAllLaporan = async (req, res) => {
   try {
     const result = await model.laporan.findAll({
       include: [
-        { model: model.provinces },
-        { model: model.regencies },
-        { model: model.districts },
-        { model: model.villages },
         { model: model.kondisi },
+        { model: model.tps },
+        {
+          model: model.users,
+          attributes: [[Sequelize.literal("user.nama"), "nama"]],
+        },
       ],
     });
     if (result.length > 0) {
@@ -41,29 +44,58 @@ controller.getAllLaporan = async (req, res) => {
 controller.createLaporan = async (req, res) => {
   try {
     const {
-      provinsi,
-      kabupaten,
-      kecamatan,
-      kelurahan,
-      pin,
+      status_tindakan,
       tps,
       tanggal,
       kondisi_tps,
+      create_by,
       deskripsi,
       gambar,
     } = req.body;
 
+    if (!tps || !kondisi_tps || !deskripsi || !gambar) {
+      return res.status(400).json({
+        success: false,
+        status: 400,
+        message: "SEMUA FIELD WAJIB DIISI!!",
+      });
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+
+
+    const existingLap = await model.laporan.findAll({
+      where: {
+        tps: tps,
+        kondisi_tps: kondisi_tps,
+        status_tindakan: 0,
+        tanggal: today,
+      },
+    });
+
+    if (existingLap.length > 0) {
+      return res.status(400).json({
+        success: false,
+        status: 400,
+        message:
+          "Laporan dengan kondisi TPS yang sama sudah dibuat dan belum di tindak lanjut!",
+      });
+    } else {
+       const foundedTps = await model.tps.findByPk(tps);
+
+    if (foundedTps) {
+      foundedTps.kondisi_tps = kondisi_tps;
+      await foundedTps.save();
+    }
+
     const result = await model.laporan.create({
-      provinsi: provinsi,
-      kabupaten: kabupaten,
-      kecamatan: kecamatan,
-      kelurahan: kelurahan,
-      pin:pin,
-      tps:tps,
-      tanggal:tanggal,
-      kondisi_tps:kondisi_tps,
-      deskripsi:deskripsi,
-      gambar:gambar,
+      status_tindakan: status_tindakan,
+      tps: tps,
+      tanggal: tanggal,
+      create_by: create_by,
+      kondisi_tps: kondisi_tps,
+      deskripsi: deskripsi,
+      gambar: gambar,
     });
 
     res.status(201).json({
@@ -72,6 +104,9 @@ controller.createLaporan = async (req, res) => {
       message: "Berhasil menambahkan laporan",
       data: result,
     });
+    }
+
+   
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -81,16 +116,53 @@ controller.createLaporan = async (req, res) => {
     });
   }
 };
+
 // CREATE LAPORAN
 
 controller.getLaporanByid = async (req, res) => {
   try {
-    const result = await model.laporan.findByPk(req.params.id);
+    const result = await model.laporan.findByPk(req.params.id, {
+      include: [{ model: model.kondisi }, { model: model.tps }],
+    });
     if (result) {
       res.status(200).json({
         success: true,
         status: 200,
         message: "Berhasil mendapatkan laporan",
+        data: result,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        status: 404,
+        message: "Gagal mendapatkan laporan",
+        data: [],
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Terjadi kesalahan pada server",
+      error: error.message,
+    });
+  }
+};
+
+// GET LAPORAN BY NIK USER
+controller.getLaporanByNik = async (req, res) => {
+  const { nik } = req.params;
+  try {
+    const result = await model.laporan.findAll({
+      where: { create_by: nik },
+      include: [{ model: model.kondisi }],
+      include: [{ model: model.tps }],
+    });
+    if (result) {
+      res.status(200).json({
+        success: true,
+        status: 200,
+        message: `Berhasil mendapatkan laporan user ${nik}`,
         data: result,
       });
     } else {
@@ -183,7 +255,3 @@ controller.deleteLaporan = async (req, res) => {
 // DELETE USER
 
 module.exports = controller;
-
-
-
-

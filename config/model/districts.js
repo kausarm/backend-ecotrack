@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const db = require("../database/mysql");
+const  regencies  = require("./regencies");
 
 let districts = db.define(
   "districts",
@@ -13,5 +14,8 @@ let districts = db.define(
     timestamps: false,
   }
 );
+
+
+districts.belongsTo(regencies,{foreignKey:"regency_id", targetKey:"id"});
 
 module.exports = districts;

@@ -26,6 +26,17 @@ app.use("/user", routes.users)
 app.use("/role", routes.roleUser)
 app.use("/kondisi",routes.kondisi)
 app.use("/laporan",routes.laporan)
+app.use("/tps",routes.tps)
+app.use("/piket",routes.piket)
+app.use("/notif-tugas",routes.notifTugas)
+app.use("/provinsi", routes.provinsi);
+app.use("/kabupaten",routes.kabupaten)
+app.use("/kecamatan",routes.kecamatan)
+app.use("/kelurahan",routes.kelurahan)
+app.use("/jenis-tps",routes.jenis_tps)
+app.use("/status-tindakan",routes.statusTindakan)
+app.use("/data-wilayah",routes.dataWilayah)
+app.use("/data-tindakan",routes.dataTindakan)
 
 app.listen(PORT || 5001, () => {
   console.log(`app listening on PORT ${PORT}`)

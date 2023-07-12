@@ -8,5 +8,6 @@ router.post("/login", controller.users.loginUser);
 router.get("/:nik", controller.users.getUserByNik);
 router.put("/:nik", controller.users.updateUser);
 router.delete("/:nik", controller.users.deleteUser);
+router.get("/:role/by-role", controller.users.getAllPetugasByRole);
 
 module.exports = router;
