@@ -113,8 +113,17 @@ controller.creaDataTindakan = async (req, res) => {
         data_wilayah.luas,
       ],
     });
+
     const prediction = await response.data.result;
 
+
+    const foundedNotif = await model.notifTugas.findOne({
+      where: { id_laporan: id_laporan_warga },
+    });
+      if (foundedNotif) {
+        foundedNotif.status_tindakan = 2;
+        await foundedNotif.save();
+      }
 
     const foundedLap = await model.laporan.findByPk(id_laporan_warga)
       if (foundedLap) {

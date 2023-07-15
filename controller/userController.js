@@ -228,10 +228,10 @@ controller.createUser = async (req, res) => {
       !nama ||
       !email ||
       !hp ||
-      !grup_piket ||
+      // !grup_piket ||
       !kecamatan ||
       !kelurahan ||
-      !level_user ||
+      // !level_user ||
       !password
     ) {
       return res.status(400).json({
