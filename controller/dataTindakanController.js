@@ -83,7 +83,7 @@ controller.getAllDataTindakanById = async (req, res) => {
 controller.creaDataTindakan = async (req, res) => {
   console.log("first::::::::::::::::::::",req.body)
   try {
-    const { sampah, id_kecamatan, tps, create_by, id_laporan_warga, gambar } = req.body;
+    const { sampah, id_kecamatan, tps, create_by, id_notif,id_laporan_warga, gambar } = req.body;
 
     if (!sampah) {
       return res.status(400).json({
@@ -108,18 +108,16 @@ controller.creaDataTindakan = async (req, res) => {
     const response = await axios.post("http://127.0.0.1:5000/predict", {
       input: [
         Number(sampah),
-        data_wilayah.penduduk,
-        data_wilayah.kepadatan,
-        data_wilayah.luas,
+        Number(data_wilayah.penduduk),
+        Number(data_wilayah.kepadatan),
+        Number(data_wilayah.luas),
       ],
     });
 
     const prediction = await response.data.result;
 
 
-    const foundedNotif = await model.notifTugas.findOne({
-      where: { id_laporan: id_laporan_warga },
-    });
+    const foundedNotif = await model.notifTugas.findByPk(id_notif)
       if (foundedNotif) {
         foundedNotif.status_tindakan = 2;
         await foundedNotif.save();

@@ -4,5 +4,6 @@ const controller = require("../controller/index");
 
 router.get("/", controller.dataTindakan.getAllDataTindakan);
 router.post("/", controller.dataTindakan.creaDataTindakan);
+router.delete("/:id", controller.dataTindakan.deleteDataTindakan);
 
 module.exports = router;
