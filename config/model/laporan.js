@@ -16,6 +16,7 @@ let laporan = db.define(
     status_tindakan: Sequelize.INTEGER,
     tps: Sequelize.INTEGER,
     tanggal: Sequelize.DATEONLY,
+    jam: Sequelize.TIME,
     kondisi_tps: Sequelize.INTEGER,
     deskripsi: Sequelize.STRING,
     gambar: { type: Sequelize.BLOB, allowNull: true },

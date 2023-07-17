@@ -121,6 +121,8 @@ controller.createTugas = async (req, res) => {
       status_tindakan,
       deskripsi,
       waktu,
+      waktu_laporan,
+      gambar_laporan,
     } = req.body;
 
       const foundedLaporan = await model.laporan.findByPk(id_laporan);
@@ -154,6 +156,8 @@ controller.createTugas = async (req, res) => {
       status_tindakan,
       deskripsi,
       waktu,
+      waktu_laporan,
+      gambar_laporan,
     });
 
     res.status(201).json({

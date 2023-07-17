@@ -168,7 +168,7 @@ controller.updateTps = async (req, res) => {
 
     if (!dataTps) {
       return res.status(404).json({
-        message: "TPS tidak ditemukan",
+        message: "TPS tidak ditemukan!",
         status: 404,
       });
     }
@@ -178,14 +178,14 @@ controller.updateTps = async (req, res) => {
     res.status(200).json({
       success: true,
       status: 200,
-      message: "Berhasil mengupdate TPS",
+      message: "Berhasil mengupdate TPS!",
       data: result,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       status: 500,
-      message: "Gagal terupdate",
+      message: "Gagal terupdate!",
       error: error.message,
     });
   }

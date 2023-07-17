@@ -20,7 +20,9 @@ let notif_tugas = db.define(
     status: Sequelize.INTEGER,
     status_tindakan: Sequelize.INTEGER,
     deskripsi: Sequelize.TEXT,
-    waktu: Sequelize.DATEONLY,
+    waktu: Sequelize.DATE,
+    waktu_laporan: Sequelize.TEXT,
+    gambar_laporan: { type: Sequelize.STRING, allowNull: false },
   },
   {
     freezeTableName: true,

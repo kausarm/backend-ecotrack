@@ -47,6 +47,7 @@ controller.createLaporan = async (req, res) => {
       status_tindakan,
       tps,
       tanggal,
+      jam,
       kondisi_tps,
       create_by,
       deskripsi,
@@ -61,6 +62,7 @@ controller.createLaporan = async (req, res) => {
       });
     }
 
+    // const today = new Date().toISOString().slice(0, 10);
     const today = new Date().toISOString().slice(0, 10);
 
 
@@ -93,6 +95,7 @@ controller.createLaporan = async (req, res) => {
       tps: tps,
       tanggal: tanggal,
       create_by: create_by,
+      jam:jam,
       kondisi_tps: kondisi_tps,
       deskripsi: deskripsi,
       gambar: gambar,
