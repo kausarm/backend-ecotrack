@@ -71,17 +71,31 @@ controller.getTugasByid = async (req, res) => {
 
 // GET TUGAS BY GROUP PIKET
 controller.getTugasByGroupPiket = async (req, res) => {
-    const { grup_piket } = req.params;
+  const { grup_piket, status_tindakan } = req.params;
   try {
-    const result = await model.notifTugas.findAll({
-      where: { grup_piket: grup_piket },
-      include: [
-        { model: model.kondisi },
-        { model: model.tps },
-        { model: model.piket },
-      ],
-    });
-    if (result) {
+    let result;
+
+    if (status_tindakan == 0) {
+      result = await model.notifTugas.findAll({
+        where: { grup_piket: grup_piket },
+        include: [
+          { model: model.kondisi },
+          { model: model.tps },
+          { model: model.piket },
+        ],
+      });
+    } else {
+      result = await model.notifTugas.findAll({
+        where: { grup_piket: grup_piket, status_tindakan: status_tindakan },
+        include: [
+          { model: model.kondisi },
+          { model: model.tps },
+          { model: model.piket },
+        ],
+      });
+    }
+
+    if (result.length > 0) {
       res.status(200).json({
         success: true,
         status: 200,
@@ -105,6 +119,7 @@ controller.getTugasByGroupPiket = async (req, res) => {
     });
   }
 };
+
 // GET TUGAS BY GROUP PIKET
 
 
