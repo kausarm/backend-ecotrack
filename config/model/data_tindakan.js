@@ -21,6 +21,8 @@ let data_tindakan = db.define(
     cluster: Sequelize.INTEGER,
     gambar: { type: Sequelize.BLOB, allowNull: true },
     create_by: Sequelize.STRING,
+    tanggal: Sequelize.DATEONLY,
+    jam: Sequelize.TIME,
   },
   {
     freezeTableName: true,

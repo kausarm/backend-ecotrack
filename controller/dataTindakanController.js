@@ -1,6 +1,6 @@
 const { default: axios } = require("axios");
 const model = require("../config/model/index");
-const { Sequelize } = require("sequelize");
+const { Sequelize, Op } = require("sequelize");
 const controller = {};
 
 controller.getAllDataTindakan = async (req, res) => {
@@ -27,6 +27,46 @@ controller.getAllDataTindakan = async (req, res) => {
         success: false,
         status: 404,
         message: "Gagal mendapatkan semua data tindakan!",
+        data: [],
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Terjadi kesalahan pada server!",
+      error: error.message,
+    });
+  }
+};
+
+controller.getAllDataTindakanFilterByTgl = async (req, res) => {
+  const {tgl_awal,tgl_akhir} = req.params;
+  try {
+    const result = await model.dataTindakan.findAll({
+      where: { tanggal: { [Op.between]: [tgl_awal, tgl_akhir] } },
+      include: [
+        { model: model.districts },
+        { model: model.tps },
+        { model: model.districts },
+        {
+          model: model.users,
+          attributes: [[Sequelize.literal("user.nama"), "nama"]],
+        },
+      ],
+    });
+    if (result.length > 0) {
+      res.status(200).json({
+        success: true,
+        status: 200,
+        message: "Berhasil mendapatkan semua data tindakan!",
+        data: result,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        status: 404,
+        message: "Gagal mendapatkan data tindakan pada range waktu tersebut!",
         data: [],
       });
     }
@@ -81,9 +121,8 @@ controller.getAllDataTindakanById = async (req, res) => {
 
 // END CREATE WITH CONNECTED TO MODEL
 controller.creaDataTindakan = async (req, res) => {
-  console.log("first::::::::::::::::::::",req.body)
   try {
-    const { sampah, id_kecamatan, tps, create_by, id_notif,id_laporan_warga, gambar } = req.body;
+    const { sampah, id_kecamatan, tps, create_by, id_notif,id_laporan_warga, gambar,tanggal,jam } = req.body;
 
     if (!sampah) {
       return res.status(400).json({
@@ -147,6 +186,8 @@ controller.creaDataTindakan = async (req, res) => {
       cluster: prediction,
       gambar: gambar,
       create_by: create_by,
+      tanggal: tanggal,
+      jam: jam,
     });
 
     res.status(201).json({
