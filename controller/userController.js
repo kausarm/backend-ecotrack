@@ -1,7 +1,6 @@
 const model = require("../config/model/index");
 const controller = {};
 const bcrypt = require("bcrypt");
-const multer = require("multer");
 
 controller.getAllUsers = async (req, res) => {
   try {
@@ -240,6 +239,17 @@ controller.createUser = async (req, res) => {
         message: "SEMUA FIELD WAJIB DIISI!!",
       });
     }
+   
+    if (
+      nik.length !== 16
+    ) {
+      return res.status(400).json({
+        success: false,
+        status: 400,
+        message: "NIK Harus 16 Angka!",
+      });
+    }
+
 
     const existingUser = await model.users.findOne({
       where: {
