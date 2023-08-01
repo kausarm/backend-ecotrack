@@ -10,6 +10,7 @@ let piket = db.define(
       autoIncrement: true,
     },
     nama: Sequelize.STRING,
+    wilayah_kerja: Sequelize.STRING,
   },
   {
     freezeTableName: true,

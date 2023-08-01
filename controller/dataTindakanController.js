@@ -122,7 +122,7 @@ controller.getAllDataTindakanById = async (req, res) => {
 // END CREATE WITH CONNECTED TO MODEL
 controller.creaDataTindakan = async (req, res) => {
   try {
-    const { sampah, id_kecamatan, tps, create_by, id_notif,id_laporan_warga, gambar,tanggal,jam } = req.body;
+    const { sampah, id_kecamatan, tps, create_by, id_notif,id_laporan_warga, gambar,tanggal,jam,deskripsi } = req.body;
 
     if (!sampah) {
       return res.status(400).json({
@@ -185,6 +185,7 @@ controller.creaDataTindakan = async (req, res) => {
       sampah: sampah,
       cluster: prediction,
       gambar: gambar,
+      deskripsi: deskripsi,
       create_by: create_by,
       tanggal: tanggal,
       jam: jam,

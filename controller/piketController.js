@@ -69,10 +69,7 @@ controller.deletePiket = async (req, res) => {
 // CREATE TPS
 controller.createPiket = async (req, res) => {
   try {
-    const {
-      id,
-      nama,
-    } = req.body;
+    const { id, nama, wilayah_kerja } = req.body;
 
     // Cek apakah semua parameter diperlukan terdefinisi dan memiliki nilai
     if (
@@ -102,6 +99,7 @@ controller.createPiket = async (req, res) => {
     const result = await model.piket.create({
       id,
       nama,
+      wilayah_kerja,
     });
 
     res.status(201).json({

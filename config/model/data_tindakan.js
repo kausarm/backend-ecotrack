@@ -22,6 +22,7 @@ let data_tindakan = db.define(
     gambar: { type: Sequelize.BLOB, allowNull: true },
     create_by: Sequelize.STRING,
     tanggal: Sequelize.DATEONLY,
+    deskripsi: Sequelize.STRING,
     jam: Sequelize.TIME,
   },
   {
