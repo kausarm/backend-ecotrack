@@ -41,7 +41,7 @@ controller.getAllDataTindakan = async (req, res) => {
 };
 
 controller.getAllDataTindakanFilterByTgl = async (req, res) => {
-  const {tgl_awal,tgl_akhir} = req.params;
+  const { tgl_awal, tgl_akhir } = req.params;
   try {
     const result = await model.dataTindakan.findAll({
       where: { tanggal: { [Op.between]: [tgl_awal, tgl_akhir] } },
@@ -118,11 +118,21 @@ controller.getAllDataTindakanById = async (req, res) => {
   }
 };
 
-
 // END CREATE WITH CONNECTED TO MODEL
 controller.creaDataTindakan = async (req, res) => {
   try {
-    const { sampah, id_kecamatan, tps, create_by, id_notif,id_laporan_warga, gambar,tanggal,jam,deskripsi } = req.body;
+    const {
+      sampah,
+      id_kecamatan,
+      tps,
+      create_by,
+      id_notif,
+      id_laporan_warga,
+      gambar,
+      tanggal,
+      jam,
+      deskripsi,
+    } = req.body;
 
     if (!sampah) {
       return res.status(400).json({
@@ -144,36 +154,37 @@ controller.creaDataTindakan = async (req, res) => {
       });
     }
 
-    const response = await axios.post("http://127.0.0.1:5000/predict", {
-      input: [
-        Number(sampah),
-        Number(data_wilayah.penduduk),
-        Number(data_wilayah.kepadatan),
-        Number(data_wilayah.luas),
-      ],
-    });
+    const response = await axios.post(
+      "https://kausarm.pythonanywhere.com/predict",
+      {
+        input: [
+          Number(sampah),
+          Number(data_wilayah.penduduk),
+          Number(data_wilayah.kepadatan),
+          Number(data_wilayah.luas),
+        ],
+      }
+    );
 
     const prediction = await response.data.result;
 
+    const foundedNotif = await model.notifTugas.findByPk(id_notif);
+    if (foundedNotif) {
+      foundedNotif.status_tindakan = 2;
+      await foundedNotif.save();
+    }
 
-    const foundedNotif = await model.notifTugas.findByPk(id_notif)
-      if (foundedNotif) {
-        foundedNotif.status_tindakan = 2;
-        await foundedNotif.save();
-      }
-
-    const foundedLap = await model.laporan.findByPk(id_laporan_warga)
-      if (foundedLap) {
-        foundedLap.status_tindakan = 2;
-        await foundedLap.save();
-      }
+    const foundedLap = await model.laporan.findByPk(id_laporan_warga);
+    if (foundedLap) {
+      foundedLap.status_tindakan = 2;
+      await foundedLap.save();
+    }
 
     const foundedTps = await model.tps.findByPk(tps);
-      if (foundedTps) {
-        foundedTps.kondisi_tps = 1;
-        await foundedTps.save();
-      }
-    
+    if (foundedTps) {
+      foundedTps.kondisi_tps = 1;
+      await foundedTps.save();
+    }
 
     const result = await model.dataTindakan.create({
       id: "",
@@ -207,7 +218,6 @@ controller.creaDataTindakan = async (req, res) => {
   }
 };
 // END CREATE WITH CONNECTED TO MODEL
-
 
 controller.deleteDataTindakan = async (req, res) => {
   try {
