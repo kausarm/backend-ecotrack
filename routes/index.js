@@ -13,6 +13,7 @@ const jenis_tps = require('./jenisTpsRoutes');
 const statusTindakan = require('./statusTindakanRoutes');
 const dataWilayah = require('./dataWilayahRoutes');
 const dataTindakan = require('./dataTindakanRoutes');
+const armada = require('./armadaRoutes');
 const routes = {}
 
 routes.users = users;
@@ -30,6 +31,7 @@ routes.jenis_tps = jenis_tps;
 routes.statusTindakan = statusTindakan; 
 routes.dataWilayah = dataWilayah; 
 routes.dataTindakan = dataTindakan; 
+routes.armada = armada; 
 
 
 module.exports = routes;

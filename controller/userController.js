@@ -1,4 +1,4 @@
-const model = require("../config/model/index");
+const model = require("../config/models/index");
 const controller = {};
 const bcrypt = require("bcrypt");
 
@@ -11,6 +11,7 @@ controller.getAllUsers = async (req, res) => {
         { model: model.districts},
         { model: model.villages},
         { model: model.roleUser},
+        { model: model.piket},
       ],
     });
     if (result.length > 0) {
@@ -405,7 +406,6 @@ controller.loginUser = async (req, res) => {
       return res.status(401).json({ message: "Password salah", status: 401 });
     }
   } catch (error) {
-    console.error("Terjadi kesalahan:", error);
     return res.status(500).json({ message: "Terjadi kesalahan saat login" });
   }
 };

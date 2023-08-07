@@ -1,4 +1,4 @@
-const model = require("../config/model/index");
+const model = require("../config/models/index");
 const controller = {};
 
 controller.getAllTps = async (req, res) => {
@@ -79,7 +79,6 @@ controller.getTpsById = async (req, res) => {
 controller.createTps = async (req, res) => {
   try {
     const {
-      id,
       pin,
       provinsi,
       kabupaten,
@@ -111,22 +110,21 @@ controller.createTps = async (req, res) => {
       });
     }
 
-    const existingTps = await model.tps.findOne({
-      where: {
-        id: id,
-      },
-    });
+    // const existingTps = await model.tps.findOne({
+    //   where: {
+    //     id: id,
+    //   },
+    // });
 
-    if (existingTps) {
-      return res.status(400).json({
-        success: false,
-        status: 400,
-        message: "TPS sudah terdaftar",
-      });
-    }
+    // if (existingTps) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     status: 400,
+    //     message: "TPS sudah terdaftar!",
+    //   });
+    // }
 
     const result = await model.tps.create({
-      id,
       pin,
       provinsi,
       kabupaten,
@@ -143,14 +141,14 @@ controller.createTps = async (req, res) => {
     res.status(201).json({
       success: true,
       status: 201,
-      message: "Berhasil menambahkan TPS",
+      message: "Berhasil menambahkan TPS!",
       data: result,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       status: 500,
-      message: "Gagal menambahkan TPS",
+      message: "Gagal menambahkan TPS!",
       error: error.message,
     });
   }

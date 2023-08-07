@@ -13,6 +13,7 @@ const jenis_tps = require("./jenisTpsController");
 const statusTindakan = require("./statusTindakanController");
 const dataWilayah = require("./dataWilayahController");
 const dataTindakan = require("./dataTindakanController");
+const armada = require("./armadaController");
 
 const controller = {};
 
@@ -31,5 +32,6 @@ controller.jenis_tps = jenis_tps;
 controller.statusTindakan = statusTindakan;
 controller.dataWilayah = dataWilayah;
 controller.dataTindakan = dataTindakan;
+controller.armada = armada;
 
 module.exports = controller;

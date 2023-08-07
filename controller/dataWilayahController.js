@@ -1,5 +1,5 @@
 const { default: axios } = require("axios");
-const model = require("../config/model/index");
+const model = require("../config/models/index");
 const controller = {};
 
 controller.getAllDataWilayah = async (req, res) => {

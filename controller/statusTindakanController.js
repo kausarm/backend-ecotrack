@@ -1,4 +1,4 @@
-const model = require("../config/model/index");
+const model = require("../config/models/index");
 const controller = {};
 
 controller.getAllStatusTindakan = async (req, res) => {

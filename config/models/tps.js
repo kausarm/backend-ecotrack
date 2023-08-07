@@ -21,7 +21,7 @@ let tps = db.define(
     kecamatan: Sequelize.CHAR,
     kelurahan: Sequelize.CHAR,
     nama: Sequelize.STRING,
-    tanggal: Sequelize.DATE,
+    tanggal: Sequelize.DATEONLY,
     kapasitas: Sequelize.INTEGER,
     jenis_tps: Sequelize.CHAR,
     gambar: { type: Sequelize.STRING, allowNull: false },

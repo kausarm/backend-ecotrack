@@ -1,5 +1,5 @@
 const { default: axios } = require("axios");
-const model = require("../config/model/index");
+const model = require("../config/models/index");
 const { Sequelize, Op } = require("sequelize");
 const controller = {};
 
@@ -80,6 +80,42 @@ controller.getAllDataTindakanFilterByTgl = async (req, res) => {
   }
 };
 
+
+// UPDATE TINDAKAN
+controller.updateTindakan = async (req, res) => {
+  try {
+    const dataTindakan = await model.dataTindakan.findOne({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    if (!dataTindakan) {
+      return res.status(404).json({
+        message: "Data tidak ditemukan!",
+        status: 404,
+      });
+    }
+
+    const result = await dataTindakan.update(req.body);
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Berhasil mengupdate data tindakan!",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Gagal terupdate!",
+      error: error.message,
+    });
+  }
+};  
+// UPDATE TINDAKAN
+
 controller.getAllDataTindakanById = async (req, res) => {
   try {
     const result = await model.dataTindakan.findOne({
@@ -132,9 +168,10 @@ controller.creaDataTindakan = async (req, res) => {
       tanggal,
       jam,
       deskripsi,
+      armada,
     } = req.body;
 
-    if (!sampah) {
+    if (!sampah && !armada) {
       return res.status(400).json({
         success: false,
         status: 400,
@@ -200,6 +237,7 @@ controller.creaDataTindakan = async (req, res) => {
       create_by: create_by,
       tanggal: tanggal,
       jam: jam,
+      armada: Number(armada),
     });
 
     res.status(201).json({

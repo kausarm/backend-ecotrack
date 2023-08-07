@@ -37,6 +37,7 @@ app.use("/jenis-tps",routes.jenis_tps)
 app.use("/status-tindakan",routes.statusTindakan)
 app.use("/data-wilayah",routes.dataWilayah)
 app.use("/data-tindakan",routes.dataTindakan)
+app.use("/armada",routes.armada)
 
 app.listen(PORT || 5001, () => {
   console.log(`app listening on PORT ${PORT}`)

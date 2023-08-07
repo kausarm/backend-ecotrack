@@ -18,6 +18,7 @@ let data_tindakan = db.define(
     penduduk: Sequelize.FLOAT,
     luas: Sequelize.FLOAT,
     sampah: Sequelize.FLOAT,
+    armada: Sequelize.INTEGER,
     cluster: Sequelize.INTEGER,
     gambar: { type: Sequelize.BLOB, allowNull: true },
     create_by: Sequelize.STRING,

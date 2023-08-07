@@ -1,21 +1,21 @@
 const model = require("../config/models/index");
 const controller = {};
 
-controller.getAllPiket = async (req, res) => {
+controller.getAllArmada = async (req, res) => {
   try {
-    const result = await model.piket.findAll();
+    const result = await model.armada.findAll();
     if (result.length > 0) {
       res.status(200).json({
         success: true,
         status: 200,
-        message: "Berhasil mendapatkan semua group piket",
+        message: "Berhasil mendapatkan semua armada",
         data: result,
       });
     } else {
       res.status(404).json({
         success: false,
         status: 404,
-        message: "Gagal mendapatkan semua group piket",
+        message: "Gagal mendapatkan semua group armada",
         data: [],
       });
     }
@@ -31,11 +31,11 @@ controller.getAllPiket = async (req, res) => {
 
 
 // DELETE TPS
-controller.deletePiket = async (req, res) => {
+controller.deleteArmada = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedTps = await model.piket.destroy({
+    const deletedTps = await model.armada.destroy({
       where: {
         id: id,
       },
@@ -45,20 +45,20 @@ controller.deletePiket = async (req, res) => {
       return res.status(404).json({
         success: false,
         status: 404,
-        message: "Group Piket tidak ditemukan!",
+        message: "Armada tidak ditemukan!",
       });
     }
 
     res.status(200).json({
       success: true,
       status: 200,
-      message: "Group Piket berhasil dihapus!",
+      message: "Armada berhasil dihapus!",
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       status: 500,
-      message: "Gagal menghapus Group Piket!",
+      message: "Gagal menghapus Armada!",
       error: error.message,
     });
   }
@@ -67,9 +67,9 @@ controller.deletePiket = async (req, res) => {
 
 
 // CREATE TPS
-controller.createPiket = async (req, res) => {
+controller.createArmada = async (req, res) => {
   try {
-    const { id, nama, wilayah_kerja } = req.body;
+    const { plat_nomor } = req.body;
 
     // Cek apakah semua parameter diperlukan terdefinisi dan memiliki nilai
     if (
@@ -82,37 +82,21 @@ controller.createPiket = async (req, res) => {
       });
     }
 
-    const existingPiket = await model.piket.findOne({
-      where: {
-        id: id,
-      },
-    });
-
-    if (existingPiket) {
-      return res.status(400).json({
-        success: false,
-        status: 400,
-        message: "Group Piket sudah terdaftar!",
-      });
-    }
-
     const result = await model.piket.create({
-      id,
-      nama,
-      wilayah_kerja,
+      plat_nomor,
     });
 
     res.status(201).json({
       success: true,
       status: 201,
-      message: "Group Piket sudah terdaftar!",
+      message: "Armada Piket sudah terdaftar!",
       data: result,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       status: 500,
-      message: "Group Piket sudah terdaftar!",
+      message: "Armada Piket sudah terdaftar!",
       error: error.message,
     });
   }

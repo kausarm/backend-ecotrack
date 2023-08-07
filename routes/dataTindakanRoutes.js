@@ -6,5 +6,6 @@ router.get("/", controller.dataTindakan.getAllDataTindakan);
 router.get("/:tgl_awal/:tgl_akhir/filter", controller.dataTindakan.getAllDataTindakanFilterByTgl);
 router.post("/", controller.dataTindakan.creaDataTindakan);
 router.delete("/:id", controller.dataTindakan.deleteDataTindakan);
+router.put("/:id", controller.dataTindakan.updateTindakan);
 
 module.exports = router;

@@ -13,6 +13,7 @@ const notifTugas = require('./notif_tugas');
 const statusTindakan = require('./status_tindakan');
 const dataWilayah = require('./data_wilayah');
 const dataTindakan = require('./data_tindakan');
+const armada = require('./armada');
 
 const model = {}
 
@@ -31,6 +32,7 @@ model.notifTugas = notifTugas;
 model.statusTindakan = statusTindakan;
 model.dataWilayah = dataWilayah;
 model.dataTindakan = dataTindakan;
+model.armada = armada;
 
 
 module.exports = model;
