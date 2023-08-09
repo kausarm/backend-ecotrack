@@ -1,6 +1,7 @@
 const { default: axios } = require("axios");
 const model = require("../config/models/index");
 const { Sequelize, Op } = require("sequelize");
+
 const controller = {};
 
 controller.getAllDataTindakan = async (req, res) => {
@@ -39,6 +40,136 @@ controller.getAllDataTindakan = async (req, res) => {
     });
   }
 };
+
+
+// GET ALL TINDAKAN SEMUA KECAMATAN BY TANGGAL
+controller.getAllDataTindakanFilterMetode = async (req, res) => {
+  try {
+    const { tanggal_awal, tanggal_akhir } = req.params;
+
+    const result = await model.dataTindakan.findAll({
+      attributes: [
+        "id_kecamatan",
+        "luas",
+        "kepadatan",
+        "penduduk",
+        "tanggal",
+        [Sequelize.fn("SUM", Sequelize.col("sampah")), "total_sampah"],
+      ],
+      include: [
+        { model: model.districts },
+        { model: model.tps },
+        {
+          model: model.users,
+          attributes: [[Sequelize.literal("user.nama"), "nama"]],
+        },
+      ],
+      where: {
+        tanggal: {
+          [Op.between]: [tanggal_awal, tanggal_akhir],
+        },
+      },
+      group: ["id_kecamatan", "luas", "kepadatan", "penduduk", "tanggal"],
+      raw: true,
+    });
+
+    // Mengelompokkan data berdasarkan id_kecamatan dan menghitung total_sampah
+    const groupedResult = result.reduce((groups, item) => {
+      if (!groups[item.id_kecamatan]) {
+        groups[item.id_kecamatan] = item;
+      } else {
+        groups[item.id_kecamatan].total_sampah += item.total_sampah;
+      }
+      return groups;
+    }, {});
+
+    // Mengubah hasil pengelompokan menjadi array
+    const finalResult = Object.values(groupedResult);
+
+if (finalResult.length > 0) {
+  const inputArray = finalResult.map((item) => [
+    Number(item.total_sampah),
+    Number(item.penduduk),
+    Number(item.kepadatan),
+    Number(item.luas),
+  ]);
+
+  const response = await axios.post("http://127.0.0.1:5000/predict", {
+    input: inputArray,
+  });
+  const klasterResults = response.data.cluster_labels;
+
+  // Menghitung rata-rata total sampah per klaster
+  const averageSampahPerKlaster = klasterResults.reduce(
+    (averages, klaster, index) => {
+      if (!averages[klaster]) {
+        averages[klaster] = {
+          totalSampah: finalResult[index].total_sampah,
+          count: 1,
+        };
+      } else {
+        averages[klaster].totalSampah += finalResult[index].total_sampah;
+        averages[klaster].count++;
+      }
+      return averages;
+    },
+    {}
+  );
+
+  // Menentukan klaster dengan produksi sampah tertinggi dan terendah
+  let klasterTinggi = null;
+  let klasterRendah = null;
+  let produksiSampahTertinggi = 0;
+  let produksiSampahTerendah = Number.MAX_VALUE;
+
+for (const klaster in averageSampahPerKlaster) {
+  const averageSampah =
+    averageSampahPerKlaster[klaster].totalSampah /
+    averageSampahPerKlaster[klaster].count;
+  if (averageSampah > produksiSampahTertinggi) {
+    klasterTinggi = klaster;
+    produksiSampahTertinggi = averageSampah;
+  }
+  if (averageSampah < produksiSampahTerendah) {
+    klasterRendah = klaster;
+    produksiSampahTerendah = averageSampah;
+  }
+}
+
+  res.status(200).json({
+    success: true,
+    status: 200,
+    message:
+      "Berhasil mendapatkan data tindakan dengan total sampah per kecamatan!",
+    data: finalResult.map((item, index) => ({
+      ...item,
+      klaster: klasterResults[index], // Menambahkan klaster ke setiap item
+    })),
+    klasterTinggi: klasterTinggi,
+    klasterRendah: klasterRendah,
+    produksiSampahTerendah: produksiSampahTerendah,
+    produksiSampahTertinggi:produksiSampahTertinggi,
+  });
+} else {
+  res.status(404).json({
+    success: false,
+    status: 404,
+    message: "Gagal mendapatkan data tindakan atau data tidak tersedia!",
+    data: [],
+  });
+}
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Terjadi kesalahan pada server!",
+      error: error.message,
+    });
+  }
+};
+// GET ALL TINDAKAN SEMUA KECAMATAN BY TANGGAL
+
 
 controller.getAllDataTindakanFilterByTgl = async (req, res) => {
   const { tgl_awal, tgl_akhir } = req.params;

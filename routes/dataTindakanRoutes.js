@@ -4,6 +4,10 @@ const controller = require("../controller/index");
 
 router.get("/", controller.dataTindakan.getAllDataTindakan);
 router.get("/:tgl_awal/:tgl_akhir/filter", controller.dataTindakan.getAllDataTindakanFilterByTgl);
+router.get(
+  "/:tanggal_awal/:tanggal_akhir/metode",
+  controller.dataTindakan.getAllDataTindakanFilterMetode
+);
 router.post("/", controller.dataTindakan.creaDataTindakan);
 router.delete("/:id", controller.dataTindakan.deleteDataTindakan);
 router.put("/:id", controller.dataTindakan.updateTindakan);
