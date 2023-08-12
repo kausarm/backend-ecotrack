@@ -294,7 +294,7 @@ controller.createUser = async (req, res) => {
     res.status(500).json({
       success: false,
       status: 500,
-      message: "Gagal mendaftar",
+      message: error.message,
       error: error.message,
     });
   }

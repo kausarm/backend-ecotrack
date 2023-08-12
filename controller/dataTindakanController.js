@@ -10,6 +10,7 @@ controller.getAllDataTindakan = async (req, res) => {
       include: [
         { model: model.districts },
         { model: model.tps },
+        { model: model.armada },
         {
           model: model.users,
           attributes: [[Sequelize.literal("user.nama"), "nama"]],
@@ -180,6 +181,7 @@ controller.getAllDataTindakanFilterByTgl = async (req, res) => {
         { model: model.districts },
         { model: model.tps },
         { model: model.districts },
+        { model: model.armada },
         {
           model: model.users,
           attributes: [[Sequelize.literal("user.nama"), "nama"]],
@@ -299,10 +301,10 @@ controller.creaDataTindakan = async (req, res) => {
       tanggal,
       jam,
       deskripsi,
-      armada,
+      plat_nomor,
     } = req.body;
 
-    if (!sampah && !armada) {
+    if (!sampah && !plat_nomor) {
       return res.status(400).json({
         success: false,
         status: 400,
@@ -321,20 +323,6 @@ controller.creaDataTindakan = async (req, res) => {
         message: "Data Wilayah Kecamatan Tersebut Belum di Input!",
       });
     }
-
-    const response = await axios.post(
-      "https://kausarm.pythonanywhere.com/predict",
-      {
-        input: [
-          Number(sampah),
-          Number(data_wilayah.penduduk),
-          Number(data_wilayah.kepadatan),
-          Number(data_wilayah.luas),
-        ],
-      }
-    );
-
-    const prediction = await response.data.result;
 
     const foundedNotif = await model.notifTugas.findByPk(id_notif);
     if (foundedNotif) {
@@ -362,13 +350,83 @@ controller.creaDataTindakan = async (req, res) => {
       penduduk: data_wilayah.penduduk,
       luas: data_wilayah.luas,
       sampah: sampah,
-      cluster: prediction,
       gambar: gambar,
       deskripsi: deskripsi,
       create_by: create_by,
       tanggal: tanggal,
       jam: jam,
-      armada: Number(armada),
+      plat_nomor: Number(plat_nomor),
+    });
+
+    res.status(201).json({
+      success: true,
+      status: 201,
+      message: "Berhasil menambahkan Data!",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: error.message,
+      error: error.message,
+    });
+  }
+};
+// END CREATE WITH CONNECTED TO MODEL
+
+// END CREATE WITH CONNECTED TO MODEL
+controller.creaDataTindakanManual = async (req, res) => {
+  console.log(req?.body)
+  try {
+    const {
+      sampah,
+      id_kecamatan,
+      tps,
+      create_by,
+      gambar,
+      tanggal,
+      jam,
+      deskripsi,
+      plat_nomor,
+    } = req.body;
+
+    if (!sampah && !plat_nomor) {
+      return res.status(400).json({
+        success: false,
+        status: 400,
+        message: "SEMUA FIELD WAJIB DIISI!!",
+      });
+    }
+
+    const data_wilayah = await model.dataWilayah.findOne({
+      where: { id_kecamatan: id_kecamatan },
+    });
+
+    console.log(data_wilayah)
+
+    if (!data_wilayah) {
+      return res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Data Wilayah Kecamatan Tersebut Belum di Input!",
+      });
+    }
+
+    const result = await model.dataTindakan.create({
+      id: "",
+      id_kecamatan: id_kecamatan,
+      tps: tps,
+      kepadatan: data_wilayah.kepadatan,
+      penduduk: data_wilayah.penduduk,
+      luas: data_wilayah.luas,
+      sampah: Number(sampah),
+      gambar: gambar,
+      deskripsi: deskripsi,
+      create_by: create_by,
+      tanggal: tanggal,
+      jam: jam,
+      plat_nomor: Number(plat_nomor),
     });
 
     res.status(201).json({

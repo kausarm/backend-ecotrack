@@ -9,6 +9,7 @@ router.get(
   controller.dataTindakan.getAllDataTindakanFilterMetode
 );
 router.post("/", controller.dataTindakan.creaDataTindakan);
+router.post("/manual", controller.dataTindakan.creaDataTindakanManual);
 router.delete("/:id", controller.dataTindakan.deleteDataTindakan);
 router.put("/:id", controller.dataTindakan.updateTindakan);
 

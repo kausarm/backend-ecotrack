@@ -3,6 +3,7 @@ const db = require("../database/mysql");
 const districts = require("./districts");
 const tps_model = require("./tps");
 const users = require("./users");
+const armada = require("./armada");
 
 let data_tindakan = db.define(
   "data_tindakan",
@@ -18,8 +19,7 @@ let data_tindakan = db.define(
     penduduk: Sequelize.FLOAT,
     luas: Sequelize.FLOAT,
     sampah: Sequelize.FLOAT,
-    armada: Sequelize.INTEGER,
-    cluster: Sequelize.INTEGER,
+    plat_nomor: Sequelize.INTEGER,
     gambar: { type: Sequelize.BLOB, allowNull: true },
     create_by: Sequelize.STRING,
     tanggal: Sequelize.DATEONLY,
@@ -43,6 +43,10 @@ data_tindakan.belongsTo(tps_model, {
 data_tindakan.belongsTo(users, {
   foreignKey: "create_by",
   targetKey: "nik",
+});
+data_tindakan.belongsTo(armada, {
+  foreignKey: "plat_nomor",
+  targetKey: "id",
 });
 
 module.exports = data_tindakan;
