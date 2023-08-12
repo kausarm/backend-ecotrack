@@ -95,9 +95,12 @@ if (finalResult.length > 0) {
     Number(item.luas),
   ]);
 
-  const response = await axios.post("http://127.0.0.1:5000/predict", {
-    input: inputArray,
-  });
+  const response = await axios.post(
+    "https://kausarm.pythonanywhere.com/predict",
+    {
+      input: inputArray,
+    }
+  );
   const klasterResults = response.data.cluster_labels;
 
   // Menghitung rata-rata total sampah per klaster
